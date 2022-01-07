@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import axios from 'axios';
 import db from '../models';
 import { successResponse, errorResponse, uniqueId } from '../helpers';
 import sendRegisterEmail from "../emails/inviteEmail"
@@ -114,6 +113,22 @@ exports.updateUser = async (req, res) => {
 }
 
 /**
+ * Generate New Password
+ * @return random unique 5 digit password
+ */
+ const generateNewPassword = (length) => {
+  var result = [];
+  let newGeneratedPassword;
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
+  }
+  newGeneratedPassword = result.join('');
+    
+  return newGeneratedPassword;
+}
+/**
  * Invite user 
  * @return Invite user data
  */
@@ -128,52 +143,49 @@ exports.inviteUser = async (req, res) => {
   newGeneratedPassword = result.join('');
     
    newGeneratedPassword;
+
   const userExist = db.users.findOne({ where: {  email: req.body.email} }) 
     if(userExist) {
-      const password = newGeneratedPassword;
+      const password = generateNewPassword(5);
       const encryptedPassword = crypto
       .createHash('md5')
       .update(password)
       .digest('hex');
-      var user = []
-      user.fullName = req.body.fullName;
-      user.email = req.body.email;
-      user.password = encryptedPassword;
-      user.cardId = req.body.cardId;
-      const k = db.users.create({ 
-        user
-      });
 
-        // var mailResponse = await sendRegisterEmail.sendEmailToUsers(req.body.email, password);
-        // if(k && mailResponse.accepted)          
-        
-            // const data = await db.users.findOne({ where: { email: req.body.email } })
-            //   if(data) {
-            //     // res.render("userList", {
-            //     //   users:data,
-            //     //   success: "User has been added succesfully."
-            //     // });
-            //     return successResponse(req, res, { data }); 
-            //   }
+      var userData = {}
+      userData.fullName = req.body.fullName;
+      userData.email = req.body.email;
+      userData.password = encryptedPassword;
+      userData.cardId = req.body.cardId;
+      userData.type = 'user';
+
+      const k = db.users.create(
+        userData
+      );
+
+      //Send invitation mail to user
+      var mailResponse = sendInvitationMail(req.body.email, password);
+      // await sendRegisterEmail.sendEmailToUsers(req.body.email, password);
+      // if(k && mailResponse.accepted)  
+      //   const data = await db.users.findOne({ where: { email: req.body.email } })
+      if(mailResponse) {
+        return successResponse(req, res, { data }); 
+      }
     } else {
       throw new Error('This email id is already exist.');
     }
 }
 
-
 /**
  * Generate New Password
  * @return random unique 5 digit password
  */
- exports.generateNewPassword = (length) => {
-  var result = [];
-  let newGeneratedPassword;
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
+ const sendInvitationMail = async(email, password) => {
+  var mailResponse = await sendRegisterEmail.sendEmailToUsers(email, password);
+  if(k && mailResponse.accepted)  
+    const data = await db.users.findOne({ where: { email: email } })
+  if(data) {
+    return data;
   }
-  newGeneratedPassword = result.join('');
     
-  return newGeneratedPassword;
 }

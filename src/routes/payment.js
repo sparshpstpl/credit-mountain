@@ -5,7 +5,9 @@ import adminMiddleware from '../../src/middleware/adminAuth';
 
 const router = express.Router();
 
-router.get('/stripe', paymentController.stripeTest);
+router.post('/gateway/stripe', paymentController.stripeTest);
+router.post('/gateway/braintree', paymentController.braintreeTest);
+router.get('/gateway/braintree-token', paymentController.generateToken);
 router.get('/', apiMiddleware, adminMiddleware, paymentController.allPayments);
 router.get('/:id', paymentController.getPayment);
 

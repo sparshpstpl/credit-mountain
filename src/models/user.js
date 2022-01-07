@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         field:'password'
       },
       cardId: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
         defaultValue: false,
         field:'card_id'
       },
