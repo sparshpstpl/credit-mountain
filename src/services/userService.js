@@ -11,7 +11,10 @@ import sendRegisterEmail from "../emails/inviteEmail"
  exports.login = async (req, res) => {
     try {  
       const user = await db.users.findOne({
-        where: { email: req.body.email },
+        where: { 
+          email: req.body.email,
+          deleted_at: null 
+        },
       });
   
       if (!user) {
@@ -51,7 +54,10 @@ exports.allUsers = async (req, res) => {
       const page = req.params.page || 1;
       const limit = 2;
       const users = await db.users.findAndCountAll({
-        where: { type: 'user' },
+        where: { 
+          type: 'user',
+          deleted_at: null
+        },
         order: [['createdAt', 'DESC'], ['fullName', 'ASC']],
         offset: (page - 1) * limit,
         limit,
@@ -69,7 +75,10 @@ exports.allUsers = async (req, res) => {
 exports.getUser = async (req, res) => {
     try {
       const users = await db.users.findOne({
-        where: { id: req.params.id },
+        where: { 
+          id: req.params.id,
+          deleted_at: null
+        },
       });
       return successResponse(req, res, { users });
     } catch (error) {
@@ -84,7 +93,12 @@ exports.getUser = async (req, res) => {
 exports.profile = async (req, res) => {
     try {
       const { userId } = req.user;
-      const user = await db.users.findOne({ where: { id: userId } });
+      const user = await db.users.findOne({  
+        where: { 
+          id: userId,
+          deleted_at: null
+        } 
+      });
       return successResponse(req, res, { user });
     } catch (error) {
       return errorResponse(req, res, error.message);
@@ -97,9 +111,13 @@ exports.profile = async (req, res) => {
  */
 exports.updateUser = async (req, res) => {
     try {
-        const { userId } = req.user;
+        // const { userId } = req.user;
+        const userId = req.params.id;
         await db.users.update(req.body, {
-          where: { id: userId }
+          where: { 
+            id: userId,
+            deleted_at: null
+          }
         })
         .then(async function  (result) {
           if(result){
@@ -112,6 +130,25 @@ exports.updateUser = async (req, res) => {
     }
 }
 
+
+/**
+ * Delete a User
+ * @return user data
+ */
+ exports.deleteUser = async (req, res) => {
+  try {
+      const userId = req.params.id;
+      await db.users
+      .update({ deletedAt: new Date }, { where: { id:userId } })
+      .then(async function  (result) {
+        if(result){
+          return successResponse(req, res, { Message: 'User deleted successfully.' }); 
+        }
+      });
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
 /**
  * Generate New Password
  * @return random unique 5 digit password
@@ -133,20 +170,10 @@ exports.updateUser = async (req, res) => {
  * @return Invite user data
  */
 exports.inviteUser = async (req, res) => {
-  var result = [];
-  let newGeneratedPassword;
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = 5;
-  for ( var i = 0; i < 5; i++ ) {
-    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
-  }
-  newGeneratedPassword = result.join('');
-    
-   newGeneratedPassword;
 
-  const userExist = db.users.findOne({ where: {  email: req.body.email} }) 
-    if(userExist) {
-      const password = '12345' //generateNewPassword(5);
+  const userExist = await db.users.findOne({ where: {  email: req.body.email} }) 
+    if(!userExist) {
+      const password = generateNewPassword(5);
       const encryptedPassword = crypto
       .createHash('md5')
       .update(password)
@@ -157,35 +184,30 @@ exports.inviteUser = async (req, res) => {
       userData.email = req.body.email;
       userData.password = encryptedPassword;
       userData.cardId = req.body.cardId;
-      userData.type = 'user';
 
       const k = db.users.create(
         userData
       );
 
+      //Send invitation mail to user
+      var mailResponse = await sendInvitationMail(req.body.email, password);
+      return successResponse(req, res, { mailResponse }); 
     } else {
       throw new Error('This email id is already exist.');
     }
 }
 
 /**
- * Generate New Password
- * @return random unique 5 digit password
+ * Send Invitation Email
+ * @return Invite User
  */
-//   //Send invitation mail to user
-//   var mailResponse = sendInvitationMail(req.body.email, password);
-//   await sendRegisterEmail.sendEmailToUsers(req.body.email, password);
-//   if(k && mailResponse.accepted)  
-//     const data = await db.users.findOne({ where: { email: req.body.email } })
-//   if(mailResponse) {
-//     return successResponse(req, res, { data }); 
-//   }
-//  const sendInvitationMail = async(email, password) => {
-//   var mailResponse = await sendRegisterEmail.sendEmailToUsers(email, password);
-//   if(k && mailResponse.accepted)  
-//     const data = await db.users.findOne({ where: { email: email } })
-//   if(data) {
-//     return data;
-//   }
+ const sendInvitationMail = async(email, password) => {
+  var mailResponse = await sendRegisterEmail.sendEmailToUsers(email, password);
+  if(mailResponse.accepted)  {
+    const data = await db.users.findOne({ where: { email: email } })
+    if(data) {
+      return data;
+    }
+  }
     
-// }
+}

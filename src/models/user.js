@@ -18,12 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       cardId: {
         type: DataTypes.STRING,
-        defaultValue: false,
         field:'card_id'
       },
       type: {
         type: DataTypes.STRING,
-        defaultValue: null,
+        defaultValue: 'user',
         field:'type'
       },
       createdAt: {
@@ -37,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: DataTypes.NOW,
         field:'updated_at'
+      },
+      deletedAt: {
+        type: DataTypes.DATE,
+        field:'deleted_at'
       },
      },
   );

@@ -40,6 +40,10 @@ module.exports = (sequelize, DataTypes) => {
           defaultValue: DataTypes.NOW,
           field:'updated_at'
         },
+        deletedAt: {
+          type: DataTypes.DATE,
+          field:'deleted_at'
+        },
        },
     );
 
@@ -50,6 +54,14 @@ module.exports = (sequelize, DataTypes) => {
             as: 'users'
         });
     };
+
+    // Payment.associate = function (models) {
+    //     Payment.belongsTo(models.payment_type, {
+    //         targetKey: 'payment_type',
+    //         foreignKey: 'payment_type_id',
+    //         as: 'payment_type'
+    //     });
+    // };
     
     return Payment;
   };

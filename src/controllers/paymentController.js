@@ -25,6 +25,18 @@ export const getPayment = async (req, res) => {
 }
 
 /**
+ * Get payment gateway list
+ * @return Payment gateway data
+ */
+export const paymentGatewayList = async (req, res) => {
+  try {
+    let response = await paymentService.paymentGatewayList(req, res);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
+/**
  * stripe testing
  * @return user data
  */

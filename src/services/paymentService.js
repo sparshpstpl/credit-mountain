@@ -42,6 +42,19 @@ exports.allPayments = async (req, res) => {
 };
 
 /**
+ * get payment gateway list
+ * @return Payment gateway data
+ */
+exports.paymentGatewayList = async (req, res) => {
+  try {
+    const paymentType = await db.payment_types.findAll();
+    return successResponse(req, res, paymentType );
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+/**
  * Get a User
  * @return user data
  */

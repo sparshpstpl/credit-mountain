@@ -16,8 +16,8 @@ exports.sendEmailToUsers = async (userEmail, newPassword) => {
         text: `Hi!! 
             Congratulations, Your account has been created.
 
-            Your login is ${userEmail}
-            Your password is  ${newPassword}
+            Your login is: ${userEmail}
+            Your password is: ${newPassword}
         `
     };
 

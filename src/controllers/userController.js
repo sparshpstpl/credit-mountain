@@ -66,6 +66,19 @@ export const updateUser = async (req, res) => {
 }
 
 /**
+ * Delete user 
+ * @return Delete user data
+ */
+export const deleteUser = async (req, res) => {
+  try {
+    let response = await userService.deleteUser(req, res);
+    // let response = await userService.update({ deletedAt: new Date }, { where: { id: user.id } });
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
+/**
  * Invite user 
  * @return Invite user data
  */
