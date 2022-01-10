@@ -146,7 +146,7 @@ exports.inviteUser = async (req, res) => {
 
   const userExist = db.users.findOne({ where: {  email: req.body.email} }) 
     if(userExist) {
-      const password = generateNewPassword(5);
+      const password = '12345' //generateNewPassword(5);
       const encryptedPassword = crypto
       .createHash('md5')
       .update(password)
@@ -163,14 +163,6 @@ exports.inviteUser = async (req, res) => {
         userData
       );
 
-      //Send invitation mail to user
-      var mailResponse = sendInvitationMail(req.body.email, password);
-      // await sendRegisterEmail.sendEmailToUsers(req.body.email, password);
-      // if(k && mailResponse.accepted)  
-      //   const data = await db.users.findOne({ where: { email: req.body.email } })
-      if(mailResponse) {
-        return successResponse(req, res, { data }); 
-      }
     } else {
       throw new Error('This email id is already exist.');
     }
@@ -180,12 +172,20 @@ exports.inviteUser = async (req, res) => {
  * Generate New Password
  * @return random unique 5 digit password
  */
- const sendInvitationMail = async(email, password) => {
-  var mailResponse = await sendRegisterEmail.sendEmailToUsers(email, password);
-  if(k && mailResponse.accepted)  
-    const data = await db.users.findOne({ where: { email: email } })
-  if(data) {
-    return data;
-  }
+//   //Send invitation mail to user
+//   var mailResponse = sendInvitationMail(req.body.email, password);
+//   await sendRegisterEmail.sendEmailToUsers(req.body.email, password);
+//   if(k && mailResponse.accepted)  
+//     const data = await db.users.findOne({ where: { email: req.body.email } })
+//   if(mailResponse) {
+//     return successResponse(req, res, { data }); 
+//   }
+//  const sendInvitationMail = async(email, password) => {
+//   var mailResponse = await sendRegisterEmail.sendEmailToUsers(email, password);
+//   if(k && mailResponse.accepted)  
+//     const data = await db.users.findOne({ where: { email: email } })
+//   if(data) {
+//     return data;
+//   }
     
-}
+// }
