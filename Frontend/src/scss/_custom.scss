@@ -1,0 +1,216 @@
+// Here you can add other styles
+@font-face {
+    font-family: "Gilroy";
+    src: url("../assets/fonts/Gilroy/Gilroy-Regular.ttf");
+}
+@font-face {
+    font-family: "Gilroy-Bold";
+    src: url("../assets/fonts/Gilroy/Gilroy-Bold.ttf");
+}
+@font-face {
+    font-family: "Gilroy-Medium";
+    src: url("../assets/fonts/Gilroy/Gilroy-Medium.ttf");
+}
+@mixin medium-text {
+    font-family: $font-family;
+    font-size: 16px;
+    line-height: $line-height;
+    color: $black-color;
+}
+@mixin custom-input {
+    width: 100%;
+    height: $input-height;
+    @include medium-text;
+    font-weight: 500;
+    color: $dark-grey-color;
+    background-color: $white-color;
+    border-color: $light-grey-color;
+}
+.header-fixed .app-header{
+    // height: 64px;
+    .navbar-toggler{
+        display: none !important;
+    }
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family: $font-family;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1;
+    color: $black-color;
+    background-color: $white-color;
+    height: 100%;
+}
+.pointer {
+    cursor: pointer;
+}
+.error{
+    color: red;
+}
+a {
+    font-weight: 500;
+    font-size: $font-size;
+    line-height: $line-height;
+    text-decoration: underline;
+    color: $black-color;
+}
+p {
+    font-size: $font-size;
+    font-family: $font-family;
+    margin-bottom: 0.5rem;
+}
+label {
+    @include medium-text;
+    color: $dark-grey-color;
+}
+h1 {
+    font-size: 24px;
+    font-family: $font-family-bold;
+}
+h2 {
+    font-size: 22px;
+    font-family: $font-family-bold;
+}
+h3 {
+    font-size: 20px;
+    font-family: $font-family-bold;
+}
+h4 {
+    font-size: 18px;
+    font-family: $font-family-md;
+}
+h5 {
+    font-size: 16px;
+    font-family: $font-family-md;
+}
+h6 {
+    font-size: 14px;
+    font-family: $font-family-md;
+}
+.container-fluid {
+    margin-top: 20px;
+}
+.card {
+    padding: 1rem;
+}
+input, .form-control, input.p-inputtext, .p-dropdown {
+    @include custom-input;
+    .p-dropdown-label {
+        @include medium-text;
+        font-weight: 500;
+        color: $dark-grey-color;
+    }
+}
+button, .p-button {
+    height: $input-height;
+    @include medium-text;
+    color: $white-color;
+    .p-button-icon {
+        font-size: inherit;
+    }
+}
+.caption {
+    font-size: 16px;
+    line-height: 18px;
+    font-family: $font-family-md;
+    color: $black-color;
+}
+.value {
+    font-size: 14px;
+    line-height: 16px;
+    color: $grey-color;
+}
+.btn-wrapper {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    button {
+        &:not(:last-child) {
+            margin-right: 15px;
+        }
+    }
+}
+.table-card-wrapper {
+    padding: 15px;
+}
+.filter-tab {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    span {
+        margin-left: 15px;
+    }
+}
+.p-datatable {
+    .p-datatable-thead {
+        & > tr {
+            &  > th {
+                padding: 10px;
+                border-color: $grey-color;
+                font-weight: 600;
+                color: $black-color;
+                font-size: $font-size;
+                line-height: $line-height;
+            }
+        }
+    }
+    .p-datatable-tbody {
+        & > tr {
+            &  > td {
+                padding: 10px;
+                border-color: $light-grey-color;
+                font-weight: 500;
+                border-width: 0 0 0.5px 0;
+                color: $grey-color;
+                font-size: $font-size;
+                line-height: 100%;
+            }
+        }
+    }
+    .p-datatable-footer {
+        background-color: $white-color;
+        font-size: $font-size;
+        line-height: $line-height;
+        border: 0;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+.p-paginator {
+    .p-paginator-pages {
+        .p-paginator-page {
+            min-width: 2rem;
+            height: 2rem;
+            font-size: $font-size;
+        }
+    }
+    .p-paginator-first, .p-paginator-prev,
+    .p-paginator-next, .p-paginator-last,
+    .p-paginator-current {
+        min-width: 2rem;
+        height: 2rem;
+        font-size: $font-size;
+    }
+}
+.tier-wrapper {
+    .p-listbox {
+        border: 0;
+        .p-listbox-list {
+            .p-listbox-item {
+                @include medium-text;
+                margin-bottom: 5px;
+                border: 1px solid #E4E4E4;
+                border-width: 1px 0 1px 0;
+                font-size: 15px;
+                background-color: $white-color;
+                &.active {
+                    background-color: #cdcbcb;
+                }
+            }
+        }
+    }
+}

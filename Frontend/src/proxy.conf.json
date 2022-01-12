@@ -1,0 +1,8 @@
+{
+    "/": {
+      "target": "http://3d59-183-87-15-189.ngrok.io",
+      "secure": false,
+      "logLevel": "debug",
+      "changeOrigin": true
+    }
+} 

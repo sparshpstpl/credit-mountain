@@ -1,0 +1,124 @@
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+<div class="card table-card-wrapper">
+  <h5>Payments</h5> 
+  <div class="container">
+    <div class="row">
+        <div class="col-3">
+            <button pButton type="button" label="Create Payment" class="p-button-outlined" (click)="openInviteDialog()"></button> <br/>
+        </div>
+    </div>
+  </div>      
+  
+  <p-table  [value]="paymentList" [rows]="pagination.rows" [lazy]="true" [totalRecords]='pagination.total' [paginator]="true"     (onLazyLoad)="loadPayment($event)"
+      selectionMode="single"  (onRowSelect)="onRowSelect($event)" 
+      [globalFilterFields]="['name','country.name','representative.name','status']" [(selection)]="selectedProducts"
+      [rowHover]="true" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [showCurrentPageReport]="true">
+      <ng-template pTemplate="header">
+          <tr>
+              <th width="5%" pSortableColumn="name">ID <!-- <p-sortIcon field="name"></p-sortIcon> -->
+              </th>
+              <th width="10%" pSortableColumn="name">Name
+              </th>
+              <th width="18%" pSortableColumn="price">Amount
+              </th>
+              <th width="13%" pSortableColumn="category">paymentTypeId
+              </th>
+              <th width="9%" pSortableColumn="phone">isRefunded <!-- <p-sortIcon field="rating"></p-sortIcon> -->
+              </th>
+              <th width="15%" pSortableColumn="createdAt">created</th>
+              <th width="15%" pSortableColumn="updatedAt">updated</th>
+              <!-- <th width="12%" >Actions 
+              </th> -->
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+          <tr class="pointer" (click)='onRowSelect(product)'>
+              <td>{{product.userId}}</td>
+              <td>{{product['users.fullName']}}</td>
+              <td>{{product.amount}}</td>
+              <td>{{product.paymentTypeId }}</td>
+              <td>
+                <ng-container *ngIf="!product.isRefunded">
+                    <button pButton type="button" label="Refund" class="p-button-outlined"></button>
+                </ng-container>  
+              </td>
+              <td>{{product.createdAt | date: 'short'}}</td>
+              <td>{{product.updatedAt | date: 'short'}}</td>
+              <!-- <td>
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text p-mr-2"
+                    (click)="editUser(product);$event.stopPropagation()"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                    (click)="deleteUser(product);$event.stopPropagation()"></button>
+            </td> -->
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+              In total there are {{pagination?.total ? pagination?.total : 0 }} users.
+          </div>
+      </ng-template>
+  </p-table>
+</div>
+<!-- [(ngModel)]="Status" -->
+<p-dialog [(visible)]="inviteDialogOpen" [style]="{width: '450px'}" [header]="'Create Payment'" [modal]="true"
+    styleClass="p-fluid">
+   
+    <ng-template pTemplate="content">
+        <form [formGroup]="paymentFG">
+        <div class="form-group">
+            <label class="p-mb-3">Name*</label>
+            <p-dropdown [options]="users" placeholder="Select a User" formControlName="userId" (onChange)="getCardId()" optionLabel="fullName" optionValue="id"></p-dropdown>
+        </div>
+        <div class="form-group">
+            <label class="p-mb-3">Payment Method*</label>
+            <p-dropdown [options]="paymentMethods" placeholder="Select a Payment method" formControlName="paymentType"  optionLabel="paymentType" optionValue="id"></p-dropdown>
+        </div>
+        <div class="form-group">
+          <label class="p-mb-3">Amount*</label>
+          <input id="float-input" placeholder="amount" type="number" formControlName="amount" pInputText >
+      </div>
+      <div class="form-group" *ngIf="isCardIdNotFound && paymentFG.controls['paymentType'].value">
+        <button pButton type="button" label="Add Card" class="p-button-outlined" (click)="cardModel=true"></button> <br/>
+    </div>
+</form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-outlined"
+            (click)="editUserDialog=!editUserDialog"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-outlined" (click)="submitPayment()"></button>
+    </ng-template>
+
+</p-dialog>
+<p-dialog [(visible)]="cardModel" [style]="{width: '450px'}" [header]="'Add Card'" [modal]="true"
+    styleClass="p-fluid">
+<form [formGroup]="stripeFG">
+  
+    <div class="event-tier-edit-wrapper w400">
+      <h6 class="modal-title">Add Card</h6>
+      <div class="form-group">
+        <div class="col-12">
+          <div class="input-group">
+            <input type="text" pInputText placeholder="Cardholder Name" formControlName="name" />
+            <div class="error-wrapper">
+              <div class="error">{{nameError}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div>
+            <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions"></ngx-stripe-card>
+            <div class="error-wrapper">
+              <div class="error">{{cardError}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p-button class="p-btn-block p-primary form-btn-submit" [loading]="loading" (click)="addCard()" label="Add Card"></p-button>
+      </div>
+    </div>
+  </form>
+</p-dialog>

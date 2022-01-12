@@ -1,0 +1,40 @@
+<p-card>
+    <h2>{{userDets?.firstName}} {{userDets?.lastName}}</h2>
+    <p-divider></p-divider>
+    <div class="container">
+        <div class="row">
+            <div class="col-2 text-center">
+                <div class="profile-img">
+                    <img src="../../../../../assets/img/avtar.png" alt="">
+                </div>
+            </div>
+            <div class="col-10">
+                <h4>Basic Details</h4>
+                <p-divider></p-divider>
+                <div class="row">
+                    <div class="col-3">
+                        <h5 class="caption">Your Name</h5>
+                        <p class="value" for="exampleFormControlInput1">{{userDets?.fullName}}</p>
+                    </div>
+                    <div class="col-3">
+                        <h5 class="caption">User Type</h5>
+                        <p class="value" for="exampleFormControlInput1">{{userDets?.type}}</p>
+                    </div>
+                    <div class="col-3">
+                        <h5 class="caption">Card Id</h5>
+                        <p class="value" for="exampleFormControlInput1">{{userDets?.cardId}}</p>
+                    </div>
+                </div>
+                <h4>Contact Detail</h4>
+                <p-divider></p-divider>
+                <div class="row">
+                    <div class="col-6">
+                        <h5 class="caption">Email Address </h5>
+                            <!-- <small class="text-primary ml-2">Verify</small></h5> -->
+                        <p class="value" for="exampleFormControlInput1">{{userDets?.email}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-card>

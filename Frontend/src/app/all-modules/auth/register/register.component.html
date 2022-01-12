@@ -1,0 +1,66 @@
+<div class="app-body">
+    <main class="main d-flex align-items-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mx-auto">
+            <div class="card mx-4">
+              <div class="card-body p-4">
+                <form [formGroup]="registerForm" (ngSubmit)="submit()">
+                  <h1>Register </h1>
+                  <p class="error" *ngIf="errMsg">{{errMsg}}</p>
+                  
+                  <div class="form-group">
+                         <label for="inputName">Full Name</label>
+                         <input type="text" formControlName="fullName"  class="form-control" placeholder="Enter Full Name"  autofocus>
+                  </div>
+     
+                   <div class="form-group">
+                     <label for="inputEmail">Email address</label>
+                     <input type="email" formControlName="email"  class="form-control" placeholder="Enter Email Address"  >
+                     <div class="error" *ngIf="submited && getControls.email.errors">
+                         <div *ngIf="getControls.email.errors.required">Email is required.</div>
+                         <div *ngIf="getControls.email.errors.email">Enter valid email address.</div>
+                     </div>
+                   </div>
+                   <div class="form-group">
+                     <label for="inputPhone">Phone Number</label>
+                     <input type="text" formControlName="phone" class="form-control" placeholder="Enter Phone Number"  >
+                     <div class="error" *ngIf="submited && getControls.phone.errors">
+                       <div *ngIf="getControls.phone.errors.required">Phone number is required.</div>
+                       <div *ngIf="getControls.phone.errors.pattern">Enter valid phone number.</div>
+                     </div>
+                   </div>
+     
+                   <div class="form-group">
+                     <label for="inputPassword">Password</label>
+                     <input type="password"  formControlName="password" class="form-control" placeholder="Enter Password" >
+                   </div>
+                   <div class="form-group">
+                     <label for="inputPassword">Confirm Password</label>
+                     <input type="password" formControlName="confirmPass" class="form-control" placeholder="Enter Confirm Password" >
+                     <div class="error" *ngIf="submited && getControls.confirmPass.errors">
+                       <div *ngIf="getControls.confirmPass.errors.required">Confirm Password is required.</div>
+                     </div>
+                     <div class="error"  *ngIf="submited && ConfirmPassErr && !getControls.confirmPass.errors">{{ConfirmPassErr}}.</div>
+                   </div>
+     
+                   <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Register</button>
+                 </form>
+              </div>
+              <div class="card-footer p-4">
+                <div class="row">
+                  <div class="col-6">
+                    <button class="btn btn-block btn-facebook" type="button"><span>facebook</span></button>
+                  </div>
+                  <div class="col-6">
+                    <button class="btn btn-block btn-twitter" type="button"><span>twitter</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  

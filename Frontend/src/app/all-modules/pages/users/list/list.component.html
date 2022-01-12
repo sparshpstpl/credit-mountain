@@ -1,0 +1,101 @@
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<div class="card table-card-wrapper">
+  <h5>Users</h5> 
+  <div class="container">
+    <div class="row">
+        <div class="col-3">
+            <button pButton type="button" label="Invite user" class="p-button-outlined" (click)="openInviteDialog()"></button> <br/>
+        </div>
+    </div>
+  </div> 
+  <p-table  [value]="users" [rows]="pagination.rows" [lazy]="true" [totalRecords]='pagination.total' [paginator]="true"     (onLazyLoad)="loadUser($event)"
+      selectionMode="single"  (onRowSelect)="onRowSelect($event)" 
+      [globalFilterFields]="['name','country.name','representative.name','status']" [(selection)]="selectedProducts"
+      [rowHover]="true" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [showCurrentPageReport]="true">
+      <ng-template pTemplate="header">
+          <tr>
+              <!-- <th style="width: 3rem">
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th> -->
+              <th width="5%" pSortableColumn="name">ID <!-- <p-sortIcon field="name"></p-sortIcon> -->
+              </th>
+              <th width="10%" pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th width="18%" pSortableColumn="price">Email <p-sortIcon field="email"></p-sortIcon>
+              </th>
+              <th width="13%" pSortableColumn="category">Type
+              </th>
+              <th width="9%" pSortableColumn="phone">cardId <!-- <p-sortIcon field="rating"></p-sortIcon> -->
+              </th>
+              <th width="15%" pSortableColumn="createdAt">created</th>
+              <th width="15%" pSortableColumn="updatedAt">updated</th>
+              <th width="12%" >Actions 
+              </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+          <tr class="pointer" (click)='onRowSelect(product)'>
+              <td>{{product.id}}</td>
+              <td>{{product.fullName}}</td>
+              <td>{{product.email}}</td>
+              <td>{{product.type }}</td>
+              <td>{{product.cardId}}</td>
+              <td>{{product.createdAt | date: 'short'}}</td>
+              <td>{{product.updatedAt | date: 'short'}}</td>
+              <td>
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text p-mr-2"
+                    (click)="editUser(product);$event.stopPropagation()"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                    (click)="deleteUser(product);$event.stopPropagation()"></button>
+            </td>
+              <!-- <td><p-inputSwitch [(ngModel)]="product.status"></p-inputSwitch>  </td>                    -->
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+              In total there are {{pagination?.total ? pagination?.total : 0 }} users.
+          </div>
+      </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="editUserDialog" [style]="{width: '450px'}" [header]="categoryHeader" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="form-group">
+            <label class="p-mb-3">Name</label>
+            <input id="float-input" type="text" pInputText [(ngModel)]="userObj.fullName">
+        </div>
+        <div class="form-group">
+          <label class="p-mb-3">Email</label>
+          <input id="float-input" type="text" disabled pInputText [(ngModel)]="userObj.email">
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+            (click)="editUserDialog=!editUserDialog"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="updateUser()"></button>
+    </ng-template>
+</p-dialog>
+<!-- invite dialog -->
+<p-dialog [(visible)]="inviteDialogOpen" [style]="{width: '450px'}" [header]="'Invite User'" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="form-group">
+            <label class="p-mb-3">Name</label>
+            <input id="float-input" type="text" placeholder="Enter Name" pInputText [(ngModel)]="inviteUserObj.fullName">
+        </div>
+        <div class="form-group">
+          <label class="p-mb-3">Email</label>
+          <input id="float-input" type="text" placeholder="Enter Email" pInputText [(ngModel)]="inviteUserObj.email">
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+            (click)="inviteDialogOpen=!inviteDialogOpen"></button>
+        <button pButton pRipple label="Invite" icon="pi pi-check" class="p-button-text" (click)="InviteUser()"></button>
+    </ng-template>
+</p-dialog>
