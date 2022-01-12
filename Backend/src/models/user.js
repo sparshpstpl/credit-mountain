@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       fullName: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
         field:'full_name'
       },
       email: {
@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: 'user',
         field:'type'
+      },
+      customerId: {
+        type: DataTypes.STRING,
+        field:'customer_id'
       },
       createdAt: {
         type: DataTypes.DATE,

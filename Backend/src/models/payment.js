@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
           field:'payment_type_id'
         },
         isRefunded: {
-          type: DataTypes.STRING,
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
           field:'is_refunded'
         },
         paymentGatewayId: {
@@ -44,6 +45,11 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.DATE,
           field:'deleted_at'
         },
+        paymentStatus: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          field: 'payment_status'
+        }
        },
     );
 

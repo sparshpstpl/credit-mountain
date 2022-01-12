@@ -90,6 +90,18 @@ export const inviteUser = async (req, res) => {
   }
 }
 
+/**
+ * Add User Card 
+ * @return Add User Card data
+ */
+export const addUserCard = async (req, res) => {
+  try {
+    let response = await userService.addUserCard(req, res);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
 export const register = async (req, res) => {
   try {
     const {

@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import db from '../models';
-import { successResponse, errorResponse, uniqueId } from '../helpers';
-import sendRegisterEmail from "../emails/inviteEmail"
+import { successResponse, errorResponse } from '../helpers';
+import sendInvitation from "../emails/inviteEmail"
 
 /**
  * Get login data
@@ -39,7 +39,7 @@ import sendRegisterEmail from "../emails/inviteEmail"
         process.env.SECRET,
       );
       delete user.dataValues.password;
-      return successResponse(req, res, { user, token });
+      return successResponse(req, res, { user, token }, "Used logged in successfully");
     } catch (error) {
       return errorResponse(req, res, error.message);
     }
@@ -52,7 +52,7 @@ import sendRegisterEmail from "../emails/inviteEmail"
 exports.allUsers = async (req, res) => {
     try {
       const page = req.params.page || 1;
-      const limit = 2;
+      const limit = 100;
       const users = await db.users.findAndCountAll({
         where: { 
           type: 'user',
@@ -122,14 +122,13 @@ exports.updateUser = async (req, res) => {
         .then(async function  (result) {
           if(result){
             let user = await db.users.findOne({ where: { id: userId } });
-            return successResponse(req, res, { user }); 
+            return successResponse(req, res, { user }, 'User Updated successfully'); 
           }
         });
     } catch (error) {
       return errorResponse(req, res, error.message);
     }
 }
-
 
 /**
  * Delete a User
@@ -149,22 +148,7 @@ exports.updateUser = async (req, res) => {
     return errorResponse(req, res, error.message);
   }
 }
-/**
- * Generate New Password
- * @return random unique 5 digit password
- */
- const generateNewPassword = (length) => {
-  var result = [];
-  let newGeneratedPassword;
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
-  }
-  newGeneratedPassword = result.join('');
-    
-  return newGeneratedPassword;
-}
+
 /**
  * Invite user 
  * @return Invite user data
@@ -185,13 +169,15 @@ exports.inviteUser = async (req, res) => {
       userData.password = encryptedPassword;
       userData.cardId = req.body.cardId;
 
-      const k = db.users.create(
+      const userCreated = db.users.create(
         userData
       );
 
-      //Send invitation mail to user
-      var mailResponse = await sendInvitationMail(req.body.email, password);
-      return successResponse(req, res, { mailResponse }); 
+      if(userCreated) {
+        //Send invitation mail to user
+        var mailResponse = await sendInvitationMail(req.body.email, password);
+        return successResponse(req, res, { mailResponse }, 'User invitation has been sent'); 
+      }
     } else {
       throw new Error('This email id is already exist.');
     }
@@ -202,12 +188,53 @@ exports.inviteUser = async (req, res) => {
  * @return Invite User
  */
  const sendInvitationMail = async(email, password) => {
-  var mailResponse = await sendRegisterEmail.sendEmailToUsers(email, password);
+  var mailResponse = await sendInvitation.sendEmailToUsers(email, password);
   if(mailResponse.accepted)  {
     const data = await db.users.findOne({ where: { email: email } })
     if(data) {
       return data;
     }
   }
-    
 }
+
+/**
+ * Generate New Password
+ * @return random unique 5 digit password
+ */
+ const generateNewPassword = (length) => {
+  var result = [];
+  let newGeneratedPassword;
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));
+  }
+  newGeneratedPassword = result.join('');
+    
+  return newGeneratedPassword;
+}
+
+/**
+ * Add User Card 
+ * @return Add User Card data
+ */
+exports.addUserCard = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        await db.users.update(req.body, {
+          where: { 
+            id: userId,
+            deleted_at: null
+          }
+        })
+        .then(async function  (result) {
+          if(result){
+            let user = await db.users.findOne({ where: { id: userId } });
+            return successResponse(req, res, { user }, 'Card added successfully'); 
+          }
+        });
+    } catch (error) {
+      return errorResponse(req, res, error.message);
+    }
+}
+

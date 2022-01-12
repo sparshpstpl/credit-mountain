@@ -32,3 +32,24 @@ export const login = {
     password: Joi.string().required(),
   },
 };
+
+export const addUserCard = {
+  body: {
+    cardId: Joi.string().required(),
+  },
+};
+
+export const updateUser = {
+  body: {
+    fullName: Joi.string().required(),
+  },
+};
+
+export const inviteUser = {
+  body: {
+    email: Joi.string()
+      .email()
+      .required(),
+    fullName: Joi.string().required(),
+  },
+};
