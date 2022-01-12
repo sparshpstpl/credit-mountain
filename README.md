@@ -1,4 +1,12 @@
 # credit-mountain
-For Frontend information:  go in Frontend folder then in README.md
-For Backend information:  go in Backend folder then in README.md
-For Documents information:  go in Documents folder, here we have Database schema and postman collection
+
+## For Documents information:
+    Inside Documents folder, here we have
+    1)Database schema
+    2)Postman collection
+
+## For Frontend information:
+    Inside Frontend folder please follow README.md insturctions
+
+## For Backend information:
+    Inside Backend folder please follow README.md insturctions
