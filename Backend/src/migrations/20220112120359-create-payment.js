@@ -40,9 +40,9 @@ module.exports = {
         defaultValue: false,
         field:'is_refunded'
       },
-      paymentGatewayId: {
-        type: Sequelize.STRING,
-        field:'payment_gateway_id'
+      paymentRefundId: {
+        type: DataTypes.STRING,
+        field:'payment_refund_id'
       },
       paymentId: {
         type: Sequelize.STRING,

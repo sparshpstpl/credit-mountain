@@ -21,9 +21,9 @@ module.exports = (sequelize, DataTypes) => {
           defaultValue: false,
           field:'is_refunded'
         },
-        paymentGatewayId: {
+        paymentRefundId: {
           type: DataTypes.STRING,
-          field:'payment_gateway_id'
+          field:'payment_refund_id'
         },
         paymentId: {
           type: DataTypes.STRING,

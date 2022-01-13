@@ -37,12 +37,24 @@ export const paymentGatewayList = async (req, res) => {
 }
 
 /**
- * stripe testing
- * @return user data
+ * stripe payment gateway
+ * @return Response
  */
- export const stripeTest = async (req, res) => {
+ export const createPaymentWithStripe = async (req, res) => {
   try {
-    let response = await paymentService.stripeTest(req, res);
+    let response = await paymentService.createPaymentWithStripe(req, res);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
+/**
+ * stripe refund
+ * @return Response
+ */
+ export const stripeRefund = async (req, res) => {
+  try {
+    let response = await paymentService.stripeRefund(req, res);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

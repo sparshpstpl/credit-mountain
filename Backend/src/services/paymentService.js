@@ -79,17 +79,16 @@ exports.getPayment = async (req, res) => {
 }
 
 /**
- * stripe testing
- * @return user data
+ * stripe payment gateway
+ * @return Response
  */
- exports.stripeTest = async (req, res) => {
+ exports.createPaymentWithStripe = async (req, res) => {
   try {
       const { userId } = req.body;
       var paymentData = {}
       paymentData.userId = userId;
       paymentData.amount = req.body.amount
       paymentData.paymentTypeId = req.body.paymentType 
-      paymentData.paymentGatewayId = '22'
 
       const user = await db.users.findOne({ where: {  id: userId} }) 
 
@@ -98,14 +97,14 @@ exports.getPayment = async (req, res) => {
         const paymentCreated = db.payments.create(
           paymentData
         ).then(async result => {
-          stripe.charges.create({ 
+          const chargeAmount = await stripe.charges.create({ 
             amount: req.body.amount * 100,
             description: `Amount of payment ${result.id}`, 
             currency: 'usd', 
             customer: user.customerId
           }); 
           await db.payments.update(
-            { paymentStatus: true }, {
+            { paymentStatus: true,  paymentId: chargeAmount.id}, {
             where: { 
               id: result.id,
               deleted_at: null
@@ -130,31 +129,65 @@ exports.getPayment = async (req, res) => {
               country: 'US',
             } 
           }).then(async(customer) => { 
-          await db.users.update(
-            { customerId: customer.id }, {
-            where: { 
-              id: userId,
-              deleted_at: null
-            }
-          })
-          stripe.charges.create({ 
-              amount: req.body.amount * 100,
-              description: `Amount of payment ${result.id}`, 
-              currency: 'usd', 
-              customer: customer.id 
-            }); 
-          })
-            await db.payments.update(
-              { paymentStatus: true }, {
+            await db.users.update(
+              { customerId: customer.id }, {
               where: { 
-                id: result.id,
+                id: userId,
                 deleted_at: null
               }
             })
+          })
+          const chargeAmount = stripe.charges.create({ 
+            amount: req.body.amount * 100,
+            description: `Amount of payment ${result.id}`, 
+            currency: 'usd', 
+            customer: customer.id 
+          }); 
+          await db.payments.update(
+            { paymentStatus: true,  paymentId: chargeAmount.id }, {
+            where: { 
+              id: result.id,
+              deleted_at: null
+            }
+          })
         });
         return successResponse(req, res, '', 'Payment successfully executed.' );
       
       }
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
+/**
+ * stripe refund
+ * @return Response
+ */
+ exports.stripeRefund = async (req, res) => {
+  try {
+    const paymentId = req.params.id;
+    const payment = await db.payments.findOne({  
+      where: { 
+        id: paymentId,
+        deleted_at: null
+      } 
+    });
+    if (payment.paymentId) {
+      await stripe.refunds.create({
+        charge: payment.paymentId,
+      }).then(async(refund) => { 
+        if(refund) {
+          await db.payments.update(
+            { isRefunded: true, paymentRefundId: refund.id}, {
+            where: { 
+              id: paymentId,
+              deleted_at: null
+            }
+          })
+          return successResponse(req, res, '', 'Payment refunded successfully.' );
+        }
+      });
+    }
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

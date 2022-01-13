@@ -259,7 +259,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"userId\": 31,\n    \"amount\": 15,\n    \"paymentType\": 1,\n    \"stripeToken\": \"tok_mastercard\"\n}",
+					"raw": "{\n    \"userId\": 20,\n    \"amount\": 55,\n    \"paymentType\": 1,\n    \"stripeToken\": \"tok_mastercard\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -390,6 +390,33 @@
 						"users",
 						"add-card",
 						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stripe Payment Refund",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/payments/gateway/stripe/refund/64",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"payments",
+						"gateway",
+						"stripe",
+						"refund",
+						"64"
 					]
 				}
 			},
