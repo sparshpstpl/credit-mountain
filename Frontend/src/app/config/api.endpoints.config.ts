@@ -6,5 +6,6 @@ export const Endpoints = {
     submitPayment:'/payments/gateway/stripe',
     getUserDetails:'/users/',
     userList:'/users',
-    paymentOptions: 'payments/gateway'
+    paymentOptions: '/payments/gateway',
+    refundPayment: '/payments/gateway/stripe/refund'
   };

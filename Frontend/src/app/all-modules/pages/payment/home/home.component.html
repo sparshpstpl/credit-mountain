@@ -25,7 +25,7 @@
               </th>
               <th width="13%" pSortableColumn="category">paymentTypeId
               </th>
-              <th width="9%" pSortableColumn="phone">isRefunded <!-- <p-sortIcon field="rating"></p-sortIcon> -->
+              <th width="9%" pSortableColumn="phone">Refund <!-- <p-sortIcon field="rating"></p-sortIcon> -->
               </th>
               <th width="15%" pSortableColumn="createdAt">created</th>
               <th width="15%" pSortableColumn="updatedAt">updated</th>
@@ -34,15 +34,18 @@
           </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product>
-          <tr class="pointer" (click)='onRowSelect(product)'>
+          <tr class="pointer">
               <td>{{product.userId}}</td>
               <td>{{product['users.fullName']}}</td>
               <td>{{product.amount}}</td>
-              <td>{{product.paymentTypeId }}</td>
+              <td>{{product.paymentLabel }}</td>
               <td>
                 <ng-container *ngIf="!product.isRefunded">
-                    <button pButton type="button" label="Refund" class="p-button-outlined"></button>
-                </ng-container>  
+                    <button pButton type="button" label="Refund" (click)="refundPayment(product)" class="p-button-outlined"></button>
+                </ng-container>
+                <ng-container *ngIf="product.isRefunded">
+                  Refunded
+              </ng-container>
               </td>
               <td>{{product.createdAt | date: 'short'}}</td>
               <td>{{product.updatedAt | date: 'short'}}</td>
@@ -56,7 +59,7 @@
       </ng-template>
       <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
-              In total there are {{pagination?.total ? pagination?.total : 0 }} users.
+              In total there are {{pagination?.total ? pagination?.total : 0 }} Payments.
           </div>
       </ng-template>
   </p-table>

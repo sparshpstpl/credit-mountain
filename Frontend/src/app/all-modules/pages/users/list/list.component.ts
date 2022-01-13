@@ -99,7 +99,7 @@ export class ListComponent implements OnInit {
   }
   deleteUser(val) {
     this.confirmationService.confirm({
-      message: `Are you sure you want to the selected artist (${val.fullName}) ?`,
+      message: `Are you sure you want to delete selected user (${val.fullName}) ?`,
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

@@ -172,6 +172,11 @@ name:any;
        this.commonService.handleApiResponse(response,true).then((res:any)=>{
          console.log(res);
          this.paymentList = res;
+         this.paymentList.map(item=>{
+           if(item.paymentTypeId) {
+             item.paymentLabel = this.paymentMethods.filter(iPayment=>iPayment.id == item.paymentTypeId )[0].paymentType;
+           }
+         })
        }).catch(e=>{
          console.log("error", e)  
        })
@@ -184,6 +189,28 @@ name:any;
        )
    }
 
+   refundPayment(val) {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to refund ($${val.amount}) to this user "${val['users.fullName']}" ?`,
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.apiService.get(`${Endpoints.refundPayment}/${val.id}`).subscribe(async(response:any)=>{
+          this.commonService.handleApiResponse(response,true).then((res:any)=>{
+            this.commonService.showSuccess('success', '', response.message)
+            this.getPaymentlists();
+          }).catch(e=>{
+            console.log("error", e)  
+          })
+          },(error)=>{
+            let eventErr = error?.error;
+                 this.commonService.logger(' loginErr',eventErr);
+                 let msg = eventErr && eventErr.message;
+                 this.commonService.showSuccess('error','',msg);
+          }
+          )
+      }})
+  } 
 
   loadPayment(event: LazyLoadEvent) {  
     console.log(event.first)
@@ -296,9 +323,10 @@ name:any;
       requestObj.stripeToken = requestObj.cardId;
     }
     this.apiService.post(`${Endpoints.submitPayment}`, requestObj).subscribe(async(response:any)=>{
-      this.commonService.handleApiResponse(response).then((res:any)=>{
+      this.commonService.handleApiResponse(response, true).then((res:any)=>{
         console.log(res);
         this.inviteDialogOpen = false;
+        response.message && this.commonService.showSuccess('success', '', response.message)
         this.getPaymentlists();
         // this.users = res?.users?.rows;
       }).catch(e=>{
