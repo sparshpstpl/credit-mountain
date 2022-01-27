@@ -136,19 +136,19 @@ exports.getPayment = async (req, res) => {
                 deleted_at: null
               }
             })
-          })
-          const chargeAmount = stripe.charges.create({ 
-            amount: req.body.amount * 100,
-            description: `Amount of payment ${result.id}`, 
-            currency: 'usd', 
-            customer: customer.id 
-          }); 
-          await db.payments.update(
-            { paymentStatus: true,  paymentId: chargeAmount.id }, {
-            where: { 
-              id: result.id,
-              deleted_at: null
-            }
+            const chargeAmount = await stripe.charges.create({ 
+              amount: req.body.amount * 100,
+              description: `Amount of payment ${result.id}`, 
+              currency: 'usd', 
+              customer: customer.id 
+            }); 
+            await db.payments.update(
+              { paymentStatus: true,  paymentId: chargeAmount.id }, {
+              where: { 
+                id: result.id,
+                deleted_at: null
+              }
+            })
           })
         });
         return successResponse(req, res, '', 'Payment successfully executed.' );
